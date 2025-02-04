@@ -387,11 +387,22 @@ namespace System.Windows.Interop
                     if (_sizeOptions.DoesScale)
                     {
                         Debug.Assert(_sizeOptions.Rotation == Rotation.Rotate0);
-                        uint width, height;
 
+                        uint sourceWidth, sourceHeight;
+                        if (!_sourceRect.IsEmpty)
+                        {
+                            sourceWidth = _sourceRect.Width;
+                            sourceHeight = _sourceRect.Height;
+                        }
+                        else
+                        {
+                            HRESULT.Check(UnsafeNativeMethods.WICBitmapSource.GetSize(_unmanagedSource, out sourceWidth, out sourceHeight));
+                        }
+
+                        uint width, height;
                         _sizeOptions.GetScaledWidthAndHeight(
-                            (uint)_sizeOptions.PixelWidth,
-                            (uint)_sizeOptions.PixelHeight,
+                            sourceWidth,
+                            sourceHeight,
                             out width,
                             out height);
 
